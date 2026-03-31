@@ -46,6 +46,12 @@ A collection of research papers on cryptographic identity, post-quantum blockcha
 - **Date:** March 10, 2026
 - **Summary:** Presents ACE Runtime, a blockchain execution layer built upon the ACE-GF identity–authorization separation primitive. Features a three-phase Attest–Execute–Prove pipeline architecture where authorization verification is shifted from cryptographic signatures to lightweight HMAC-based attestations (~1 μs per transaction), while zero-knowledge proof generation is moved off the critical path. Targets 400 ms block times, ~600 ms hard cryptographic finality, and eliminates the GPU requirement for non-builder validators.
 
+### HFIPay: Privacy-Preserving, Cross-Chain Cryptocurrency Payments to Human-Friendly Identifiers
+- **File:** `2603.26970v1.pdf`
+- **Author:** Jian Sheng Wang
+- **Date:** March 27, 2026
+- **Summary:** Presents HFIPay, a relay-assisted payment protocol that lets users send cryptocurrency to human-friendly identifiers (email addresses, phone numbers, social handles) while keeping the identifier-to-address mapping private. Separates private routing, sender-side quote verification, and on-chain claim authorization: a relay resolves the identifier off-chain, commits only a per-intent blinded binding plus the quoted payment tuple, and the recipient claims funds by proving in zero knowledge (via ZK-ACE) that the funded intent's blinded binding matches a handle derived from the same deterministic identity. Formalizes enumeration resistance and pre-claim unlinkability, distinguishes baseline from verified-quote deployments, and composes with n-VM for cross-chain settlement.
+
 ### n-VM: A Multi-VM Layer-1 Architecture with Shared Identity and Token State
 - **File:** `2603.23670v1.pdf`
 - **Author:** Jian Sheng Wang

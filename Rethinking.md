@@ -92,9 +92,23 @@ The result is a layered verification architecture: relay nodes perform the light
 
 ---
 
+## Rethink 7: Paying Someone ≠ Knowing Their Address
+
+**Industry default:** Sending cryptocurrency requires the sender to know the recipient's on-chain address. Human-friendly identifier schemes (e.g., ENS, Solana Name Service) map identifiers directly to addresses via public registries, making the mapping globally visible.
+
+**The problem:** Opaque hexadecimal addresses are a primary UX barrier to cryptocurrency adoption. Yet naïve identifier-to-address mapping introduces a critical privacy vulnerability: anyone who knows a user's email, phone number, or social handle can derive their on-chain address and inspect their entire transaction history, balances, and counterparty relationships. For public figures, a single known identifier can reconstruct a complete financial profile across every supported chain.
+
+Stealth-address schemes (e.g., ERC-5564) mitigate linkability but still require the sender to know the recipient's public key or meta-address, and the recipient must scan every transaction to detect incoming payments. Neither approach achieves the UX simplicity of "send to email" with full privacy.
+
+**After separation:** HFIPay decouples identifier routing, sender-side quote verification, and on-chain claim authorization. The sender specifies only a human-friendly identifier; the relay privately resolves it off-chain, derives a one-time deposit address, and commits only a per-intent blinded binding plus the quoted payment tuple on-chain. The chain sees neither the identifier nor a reusable recipient tag. The recipient later claims by proving in zero knowledge — via ZK-ACE — that the funded intent's blinded binding matches a handle derived from the same deterministic identity, authorizing release to a chosen destination. In a verified-quote deployment, the relay furnishes a sender-verifiable proof that the quoted binding is tied to the attested recipient, preventing substitution before funding.
+
+**Industry significance:** "Send crypto to an email address" is a long-sought UX goal, but every prior approach sacrificed either privacy (public registries) or decentralization (custodial intermediaries that can redirect funds). HFIPay achieves the UX target while keeping identifier resolution private, claim authorization on-chain, and the relay non-custodial — relays are privacy and availability dependencies, but cannot redirect funds. When composed with n-VM, the same claim mechanism extends to cross-chain settlement, making "send to email on any chain" a single unified flow.
+
+---
+
 ## Architecture
 
-The six rethinks above are not independent observations but logical consequences of the same structural separation applied at different levels of the blockchain stack:
+The seven rethinks above are not independent observations but logical consequences of the same structural separation applied at different levels of the blockchain stack:
 
 ```
         Identity–Authorization Separation
@@ -105,14 +119,14 @@ The six rethinks above are not independent observations but logical consequences
        │          Layer              │
        ├─ ACE-GF  ├─ ZK-ACE     ├─ CT-DAP (Asset Control)
        ├─ VA-DAR  ├─ AR-ACE     ├─ AESP (Agent Economics)
-       │          ├─ ACE Runtime │
+       │          ├─ ACE Runtime ├─ HFIPay (Payments)
        │          │              │
        └──────────┴───────┬──────┘
                           ▼
                    n-VM (Multi-VM)
 ```
 
-One primitive, one separation, six rethinks, covering the full trust stack from key management to execution runtime.
+One primitive, one separation, seven rethinks, covering the full trust stack from key management to payment experience.
 
 ---
 
@@ -129,7 +143,7 @@ Any challenge to established paradigms must honestly face its own uncertainties:
 
 ## Conclusion
 
-Many "impossibilities" in the blockchain industry are, at their core, "impossibilities under current assumptions." When we revisit these assumptions — private key as control, signature as authorization, seed as identity, bridge as cross-chain — and systematically explore the consequences of identity–authorization separation, some limitations previously considered fundamental begin to reveal structural resolution paths.
+Many "impossibilities" in the blockchain industry are, at their core, "impossibilities under current assumptions." When we revisit these assumptions — private key as control, signature as authorization, seed as identity, bridge as cross-chain, address as payment target — and systematically explore the consequences of identity–authorization separation, some limitations previously considered fundamental begin to reveal structural resolution paths.
 
 This does not mean these paths will necessarily lead to success. The distance from papers to production, from proof of concept to ecosystem building, is often longer than the papers themselves. But at the very least, it is worth pausing to reconsider: are the things we take for granted truly the only options?
 
